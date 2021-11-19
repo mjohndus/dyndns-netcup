@@ -49,7 +49,7 @@ IPv4 address for: \<hostname\> not changed.
 **or**  
 IPv4 address for: \<hostname\> updated successfully!  
 
-##### Example for ip4:
+##### Example for IPv4:
 
 yyyy@xxx: ./dncapi.php --force  
 IPv4 Address changed or Option --force is enabled.  
