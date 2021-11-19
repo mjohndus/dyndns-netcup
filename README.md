@@ -1,7 +1,7 @@
 # dyndns for netcup
-simple script to update all ip4(A) (and/or) ip6(AAAA) for one domain hosted by netcup  
+**simple script to update all ip4(A) (and/or) ip6(AAAA) for one domain hosted by netcup**  
 
-**using Netcup DNS.API:**  
+using Netcup DNS.API:  
 
 **https://www.netcup-wiki.de/wiki/DNS_API**
 
@@ -44,11 +44,13 @@ simple script to update all ip4(A) (and/or) ip6(AAAA) for one domain hosted by n
 ## Output:
 **If there is nothing to do and NO ERROR, there is no output**  
 
-**output by --force or --change:**  
+**output by --force or changed IP:**  
 
-**IPv4 address for: \<hostname\> not changed.**  
-or  
-**IPv4 address for: \<hostname\> updated successfully!**  
+IPv4 address for: \<hostname\> not changed.  
+**or**  
+IPv4 address for: \<hostname\> updated successfully!  
+
+#### Example for ip4
 
 yyyy@xxx: ./dncapi.php --force  
 IPv4 Address changed or Option --force is enabled.  
