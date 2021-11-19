@@ -17,9 +17,12 @@ an ip check compares the current and the stored ip.
 If nothing has changed, the script is terminated.  
 The script starts if ip changed or option --force is set.
 
-#### usage:
-dncapi.php (optional) --force
+#### Use:  
+./dncapi.php  
 
-| option | short description | example |
-|:--------------:|:-------------:|:--------------:|
-| --force | ignore ip check, starts the script | dncapi.php --force |
+#### Use with option:
+./dncapi.php --force
+
+| option | description |
+|:--------------:|--------------:|
+| --force | ignore ip check, starts the script |
