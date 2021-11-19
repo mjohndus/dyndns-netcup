@@ -40,3 +40,21 @@ simple script to update all ip4(A) (and/or) ip6(AAAA) for one domain hosted by n
 | option | description |
 |:--------------:|--------------:|
 | --force | ignore ip check, starts the script |
+
+## Output:
+**If there is nothing to do and NO ERROR, there is no output**  
+**output by --force or --change:**  
+**IPv4 address for: <hostname> not changed.**  
+or  
+**IPv4 address for: <hostname> updated successfully!**  
+
+yyyy@xxx: ./dncapi.php --force  
+IPv4 Address changed or Option --force is enabled.  
+Login: success  
+IPv4 address for: * not changed.  
+IPv4 address for: @ not changed.  
+IPv4 address for: dynd not changed.  
+IPv4 address for: xxx not changed.  
+IPv4 address for: yyy not changed.  
+IPv4 ..  
+Logout: success  
