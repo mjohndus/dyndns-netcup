@@ -163,16 +163,12 @@ function modrecords($domain, $ncnr, $apikey, $apid, $dnsrecords) {
     return false;
 }
 
-//Declare options
+//Declare option
 $force = false;
 
 //Check passed options
-if (isset($argv)){
-    foreach ($argv as $option) {
-         if ($option === "--force") {
-             $force = true;
-         }
-    }
+if (isset($argv[1]) && $argv[1] === "--force") {
+   $force = true;
 }
 
 //check local ip4
