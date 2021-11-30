@@ -1,7 +1,7 @@
 #!/bin/php
 <?php
 
-$ncnr = '123456';
+$ncid = '123456';
 $apikey = '1234567890asdfghjkl0987654321';
 $apipw = '1234567890asdfghjkl0987654321';
 $domain = 'xyz.de';
@@ -21,7 +21,7 @@ function getip4($url4) {
    if (filter_var($pip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
        return $pip;
    }
-   echo "Get ip4 Fehler !\n";
+   echo "Get IP4 Fehler !\n";
    exit(1);
 }
 
@@ -32,7 +32,7 @@ function getip6($url6) {
    if (filter_var($pip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
        return $pip;
    }
-   echo "Get ip6 Fehler !\n";
+   echo "Get IP6 Fehler ! --> IP6 is enabled you have IP6 ?\n";
    exit(1);
 }
 
@@ -81,10 +81,10 @@ global $url;
     return $code;
 }
 
-function login($ncnr, $apikey, $apipw) {
+function login($ncid, $apikey, $apipw) {
 
     $logindata = ['action' => 'login',
-                  'param' => ['customernumber' => $ncnr,
+                  'param' => ['customernumber' => $ncid,
                               'apikey' => $apikey,
                               'apipassword' => $apipw
                              ]
@@ -102,10 +102,10 @@ function login($ncnr, $apikey, $apipw) {
     exit(1);
 }
 
-function logout($ncnr, $apikey, $apid) {
+function logout($ncid, $apikey, $apid) {
 
     $logoutdata = ['action' => 'logout',
-                   'param' => ['customernumber' => $ncnr,
+                   'param' => ['customernumber' => $ncid,
                                'apikey' => $apikey,
                                'apisessionid' => $apid
                               ]
@@ -124,11 +124,11 @@ function logout($ncnr, $apikey, $apid) {
       }
 }
 
-function getrecords($domain, $ncnr, $apikey, $apid) {
+function getrecords($domain, $ncid, $apikey, $apid) {
 
     $recordsdata = ['action' => 'infoDnsRecords',
                     'param' => ['domainname' => $domain,
-                                'customernumber' => $ncnr,
+                                'customernumber' => $ncid,
                                 'apikey' => $apikey,
                                 'apisessionid' => $apid
                                ]
@@ -143,11 +143,11 @@ function getrecords($domain, $ncnr, $apikey, $apid) {
     return false;
 }
 
-function modrecords($domain, $ncnr, $apikey, $apid, $dnsrecords) {
+function modrecords($domain, $ncid, $apikey, $apid, $dnsrecords) {
 
     $moddata = ['action' => 'updateDnsRecords',
                 'param' => ['domainname' => $domain,
-                            'customernumber' => $ncnr,
+                            'customernumber' => $ncid,
                             'apikey' => $apikey,
                             'apisessionid' => $apid,
                             'dnsrecordset' => ['dnsrecords' => [$dnsrecords]]
@@ -163,10 +163,12 @@ function modrecords($domain, $ncnr, $apikey, $apid, $dnsrecords) {
     return false;
 }
 
+//Start
+
 //Declare option
 $force = false;
 
-//Check passed options
+//Check option
 if (isset($argv[1]) && $argv[1] === "--force") {
    $force = true;
 }
@@ -174,7 +176,6 @@ if (isset($argv[1]) && $argv[1] === "--force") {
 //check local ip4
 if ($ipv4 && $pip4 = getip4($url4)) {
     if (checkcachedip($dir, $cip4, $pip4) && !$force) {
-        //echo "IPv4 Address not changed & Option --force disabled. Exiting.\n";
         exit(1);
         }
         else {
@@ -187,7 +188,6 @@ if ($ipv4 && $pip4 = getip4($url4)) {
 //check local ip6
 if ($ipv6 && $pip6 = getip6($url6)) {
     if (checkcachedip($dir, $cip6, $pip6) && !$force) {
-        //echo "IPv6 Address not changed & Option --force disabled. Exiting.\n";
         exit(1);
         }
         else {
@@ -197,9 +197,11 @@ if ($ipv6 && $pip6 = getip6($url6)) {
     }
 }
 
-$apid = login($ncnr, $apikey, $apipw);
+//get login ID
+$apid = login($ncid, $apikey, $apipw);
 
-if ($rec = getrecords($domain, $ncnr, $apikey, $apid)) {
+//get records
+if ($rec = getrecords($domain, $ncid, $apikey, $apid)) {
     //get ip4 records
     foreach ($rec['responsedata']['dnsrecords'] as $record) {
          if ($ipv4 && $record['type'] === "A") {
@@ -219,7 +221,7 @@ if ($ipv4) {
             //Yes, ip has changed.
             echo "IPv4 address for: ".$record['hostname']." has changed.\n";
             $record['destination'] = $pip4;
-            if (modrecords($domain, $ncnr, $apikey, $apid, $record)) {
+            if (modrecords($domain, $ncid, $apikey, $apid, $record)) {
                 echo "IPv4 address for: ".$record['hostname']." updated successfully!\n";
                 } else {
                   exit(1);
@@ -239,7 +241,7 @@ if ($ipv6) {
             //Yes, ip has changed.
             echo "IPv6 address for: ".$record['hostname']." has changed.\n";
             $record['destination'] = $pip6;
-            if (modrecords($domain, $ncnr, $apikey, $apid, $record)) {
+            if (modrecords($domain, $ncid, $apikey, $apid, $record)) {
                 echo "IPv6 address for: ".$record['hostname']." updated successfully!\n";
                 } else {
                   exit(1);
@@ -252,4 +254,5 @@ if ($ipv6) {
     }
 }
 
-logout($ncnr, $apikey, $apid);
+//logout
+logout($ncid, $apikey, $apid);
