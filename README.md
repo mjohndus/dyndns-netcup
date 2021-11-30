@@ -1,9 +1,8 @@
 # dyndns for netcup
 **simple script to update all IP4 (and/or) IP6 for ONE DOMAIN hosted by netcup**  
 ONLY UPDATING. No adding, deleting, creating, changing names, ...  
-Using Netcup DNS_API:  
 
-**https://www.netcup-wiki.de/wiki/DNS_API**  
+Using the **[Netcup-DNS_API](https://www.netcup-wiki.de/wiki/DNS_API)**.  
 
 ## Installation
 **Copy the file to your preferred folder.**  
