@@ -37,8 +37,10 @@ Using the **[Netcup-DNS_API](https://www.netcup-wiki.de/wiki/DNS_API)**.
 **Use with option:** ./dncapi.php --force  
 
 | option | description |
-|:--------------:|--------------:|
+|:------:|------------:|
 | --force | ignore ip check, starts the script |
+| --hosts | use your declared hostnames |
+| --debug | some information |
 
 ## Output
 **There is no output: If nothing to do and NO ERROR**  
