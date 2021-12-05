@@ -1,5 +1,7 @@
 # dyndns for netcup
-**simple script to update all or defined (with Option --hosts) IPv4 (and/or) IPv6 for one domain hosted by netcup**  
+**Simple script to Update all or defined (with Option --hosts)  
+IPv4 (and/or) IPv6 Addresses for one domain hosted by netcup**  
+
 ONLY UPDATING. No adding, deleting, creating, changing names, ...  
 
 Using the **[Netcup-DNS_API](https://www.netcup-wiki.de/wiki/DNS_API)**.  
