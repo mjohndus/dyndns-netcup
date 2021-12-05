@@ -1,5 +1,5 @@
 # dyndns for netcup
-**simple script to update all IP4 (and/or) IP6 for ONE DOMAIN hosted by netcup**  
+**simple script to update all or defined (with Option --hosts) IPv4 (and/or) IPv6 for one domain hosted by netcup**  
 ONLY UPDATING. No adding, deleting, creating, changing names, ...  
 
 Using the **[Netcup-DNS_API](https://www.netcup-wiki.de/wiki/DNS_API)**.  
@@ -18,9 +18,12 @@ Using the **[Netcup-DNS_API](https://www.netcup-wiki.de/wiki/DNS_API)**.
 - $ipv4 = true;  
 - $ipv6 = false;  
 
-**Define your Hostnames**
+**Define your Hostnames:**
 - $hostsv4 = [];
 - $hostsv6 = [];
+
+**Example:**
+- $hostsv4 = ['*', '@', 'server', ...];
 
 **Your preferred Server:**  
 - $url4 = 'https://ip4.first.de';
