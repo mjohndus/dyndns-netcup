@@ -9,18 +9,24 @@ Using the **[Netcup-DNS_API](https://www.netcup-wiki.de/wiki/DNS_API)**.
 
 ## Configuration
 **Fill out your data:**
-- $ncnr = '123456';
-- $apikey = '1234567890asdfghjkl0987654321';
-- $apipw = '1234567890asdfghjkl0987654321';
-- $domain = 'xyz.de';
+- $ncid = '123456';
+- $apikey = 'Your-apikey';
+- $apipw = 'Your-apipassword';
+- $domain = 'yourdomain.de';
 
 **Your choice:**  
 - $ipv4 = true;  
 - $ipv6 = false;  
 
+**Define your Hostnames**
+- $hostsv4 = [];
+- $hostsv6 = [];
+
 **Your preferred Server:**  
-- $url4 = 'https://ip4.irgendwas.ti';  
-- $url6 = 'https://ip6.irgendwas.ti';  
+- $url4 = 'https://ip4.first.de';
+- $url4b = 'https://ip4.second.de';
+- $url6 = 'https://ip6.first.de';
+- $url6b = 'https://ip6.second.de';
 
 ## Howto
 **At first start:**  
@@ -44,7 +50,7 @@ Using the **[Netcup-DNS_API](https://www.netcup-wiki.de/wiki/DNS_API)**.
 
 ## Output
 **There is no output: If nothing to do and NO ERROR**  
-**Output by --force or IP change:**  
+**Output by --force, --debug or IP changed**  
 
 IPv4 address for: \<hostname\> not changed.  
 **or**  
