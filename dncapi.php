@@ -263,7 +263,6 @@ if (!$ipv4 && !$ipv6) {
     }
     else {
     //some information
-    //debug("\nIPv4/6 your choice: ".($ipv4 ? "IPv4 = true.":"IPv4 = false."). " -- " .($ipv6 ? "IPv6 = true.":"IPv6 = false."));
     debug("\nIPv4 your choice: ".($ipv4 ? "IPv4 = true.":"IPv4 = false."));
     debug("IPv6 your choice: ".($ipv6 ? "IPv6 = true.":"IPv6 = false."));
     debug("\nOption --hosts = ".($hosts ? "true.":"false."));
@@ -318,13 +317,13 @@ if ($rec = getrecords($domain, $ncid, $apikey, $apid)) {
         debug("\nYour Host IPv4 ID's: ".(count($foundV4id) == 0? "0":implode(", ", $foundV4id)));
        }
        if ($ipv6) {
-          debug((!$ipv4? "\n":"")."Your Host IPv6 ID's: ".(count($foundV6id) == 0? "0\n":implode(", ", $foundV6id)."\n"));
+          debug((!$ipv4? "\n":"")."Your Host IPv6 ID's: ".(count($foundV6id) == 0? "0":implode(", ", $foundV6id)));
     }
 }
 
 //Check Hostname declaration --> hostsv4
 if ($ipv4 && $anzv4 !== 0 && $hosts == true && count($foundV4names) !== $anzv4) {
-    echo (!$ipv6? "\n":"")."There is something wrong with your IPv4 Hostname Declaration\n";
+    echo "\nThere is something wrong with your IPv4 Hostname Declaration\n";
     echo "your declaration: $anzv4 --> ".implode(", ", $hostsv4)."\n";
     echo "found hostnames : ".(count($foundV4names) == 0? "0":count($foundV4names). " --> " .implode(", ", $foundV4names)). "\n";
     if (!$ipv6) {
@@ -341,7 +340,7 @@ if ($ipv4 && $anzv4 !== 0 && $hosts == true && count($foundV4names) !== $anzv4) 
 
 //Check Hostname declaration --> hostsv6
 if ($ipv6 && $anzv6 !== 0 && $hosts == true && count($foundV6names) !== $anzv6) {
-    echo (!$ipv4? "\n":"")."There is something wrong with your IPv6 Hostname Declaration\n";
+    echo "\nThere is something wrong with your IPv6 Hostname Declaration\n";
     echo "your declaration: $anzv6 --> ".implode(", ", $hostsv6)."\n";
     echo "found hostnames : ".(count($foundV6names) == 0? "0":count($foundV6names). " --> " .implode(", ", $foundV6names)). "\n";
     echo "So we --> EXIT!.\n\n";
