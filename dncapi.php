@@ -6,8 +6,8 @@ $apikey = 'Your-apikey';
 $apipw = 'Your-apipassword';
 $domain = 'yourdomain.de';
 
-$ipv4 = true;
-$ipv6 = true;
+$ipv4 = false;
+$ipv6 = false;
 
 $hostsv4 = [];
 $hostsv6 = [];
@@ -21,6 +21,21 @@ $url6 = 'https://ip6.first.de';
 $url6b = 'https://ip6.second.de';
 
 $url = 'https://ccp.netcup.net/run/webservice/servers/endpoint.php?JSON';
+
+// printf
+$full = '-------------------------';
+$full = $full.$full.$full.$full.$full;
+$br = 81;
+$rr = "|";
+$head = "%s %16s %24s %8s %28s\n";
+$body = "%s %-14s %s %-22s %s %6s %s %26s %s\n";
+
+$bbr = 108;
+$top = "%s %12s %24s %27s %27s %12s\n";
+$bod = "%s %-10s %s %-22s %s %25s %s %25s %s %10s %s\n";
+$bod1 = "%s %-10s %s %-22s %s %66s %s\n";
+
+// # --> declare some functions <-- #
 
 //Debug Mode
 function debug($msg) {
@@ -45,7 +60,7 @@ function getip4($url4, $url4b) {
        debug("\nGet IPv4 from Backup-Server connection problem ?");
        return $pip;
    }
-   echo "Get IPv4 Fehler --> Exit!.\n";
+   echo "Error --> Get IPv4 Fehler --> Exit!.\n";
    exit(1);
 }
 
@@ -62,7 +77,7 @@ function getip6($url6, $url6b) {
        debug("\nGet IPv6 from Backup-Server connection problem ?");
        return $pip;
    }
-   echo "Get IPv6 Fehler ! --> IPv6 is enabled --> you have IPv6 ? --> Exit!.\n";
+   echo "Error --> Get IPv6 Fehler ! --> IPv6 is enabled --> you have IPv6 ? --> Exit!.\n";
    exit(1);
 }
 
@@ -103,7 +118,7 @@ global $url;
    $code = curl_exec($ch);
    //$cod = trim($cod1);
      if (curl_errno($ch)) {
-         echo "Fehler: CURL_EXEC";
+         echo "Error --> CURL_EXEC";
          exit(1);
      }
    curl_close($ch);
@@ -128,7 +143,7 @@ function login($ncid, $apikey, $apipw) {
          return $rcode['responsedata']['apisessionid'];
      }
     //Login failed
-    echo "\nLogin: ".$rcode['status']."\n";
+    echo "\nError --> Login: ".$rcode['status']."\n";
     exit(1);
 }
 
@@ -149,7 +164,7 @@ function logout($ncid, $apikey, $apid) {
         }
         else {
            //Logout failed
-           echo "Logout: ".$rcode['status']."\n";
+           echo "Error --> Logout: ".$rcode['status']."\n";
            exit(1);
      }
 }
@@ -170,7 +185,9 @@ function getrecords($domain, $ncid, $apikey, $apid) {
      if ($rcode['status'] === 'success') {
          return $rcode;
      }
-     return false;
+     echo "Error --> is domainname: ".$domain." correct and exists ? --> Exit!\n";
+     logout($ncid, $apikey, $apid);
+     exit(1);
 }
 
 function modrecords($domain, $ncid, $apikey, $apid, $dnsrecords) {
@@ -193,24 +210,33 @@ function modrecords($domain, $ncid, $apikey, $apid, $dnsrecords) {
      return false;
 }
 
-//Start
+// # --> end functions <-- #
+// # --> Start
 
 //Declare options
 $force = false;
 $debug = false;
 $hosts = false;
+$info = false;
 
 if ($argc > 1) {
     foreach($argv as $opt) {
-      if ($opt === "--force") {
-          $force = true;
-      }
-      elseif ($opt === "--debug") {
-          $debug = true;
-      }
-      elseif ($opt === "--hosts") {
-          $hosts = true;
-      }
+        if ($opt === "--force") {
+            echo "\nOption \"--force\" is Set: ignore's ipcheck and different ip(4/6) will be changed.\n";
+            $force = true;
+        }
+        elseif ($opt === "--debug") {
+            $debug = true;
+        }
+        elseif ($opt === "--hosts") {
+            $hosts = true;
+        }
+        elseif ($opt === "--info") {
+            echo "\nOption \"--info\" is Set: no changes will be made.\n";
+            $info = true;
+            $force = true;
+            $debug = true;
+        }
     }
 }
 
@@ -223,16 +249,20 @@ $chk4 = checkcachedip($dir, $cip4, $pip4);
 
     if ($chk4 && !$force && !$ipv6) {
         //Nothing to do --> Quit
-        debug("Public IPv4 & cached IPv4 are equal no Option is Set --> Exit!.\n");
+        debug("\nPublic IPv4 & cached IPv4 are equal no Option is Set --> Exit!.\n");
         exit(1);
         }
         elseif ($chk4 && $force) {
-          echo (!$debug? "\n":"")."IPv4 Address not changed but Option --force = true.\n";
+          //echo (!$debug? "\n":"")."IPv4 Address not changed but Option ".($info? "\"--info\"":"\"--force\"")." is Set. --> continue.\n";
+          echo "\nIPv4 Address not changed but Option ".($info? "\"--info\"":"\"--force\"")." is Set. --> continue.\n";
           }
-          elseif (!$chk4) {
-            //Write new valid public IPv4 address to local file
-            echo "Public IPv4 changed --> Updating Cached IPv4";
-            file_put_contents($dir.$cip4, $pip4);
+          elseif (!$chk4 && $info) {
+            echo "\nIPv4 Address changed but Option \"--info\" is Set --> no changes will be made.\n";
+            }
+            elseif (!$chk4 && !$info) {
+              //Write new valid public IPv4 address to local file
+              echo "Info --> Public IPv4 changed --> Updating Cached IPv4";
+              file_put_contents($dir.$cip4, $pip4);
     }
 }
 
@@ -243,22 +273,25 @@ $chk6 = checkcachedip($dir, $cip6, $pip6);
 
     if ($chk6 && !$force) {
         //Nothing to do --> Quit
-        debug(($chk4? "\n":"")."Public ".($chk4? "IPv4/v6":"IPv6"). " & cached ".($chk4? "IPv4/v6":"IPv6"). " are equal no Option is Set --> Exit!.\n");
+        debug("\nPublic ".($chk4? "IPv4/v6":"IPv6"). " & cached ".($chk4? "IPv4/v6":"IPv6"). " are equal no Option is Set --> Exit!.\n");
         exit(1);
         }
         elseif ($chk6 && $force) {
-          echo (!$debug? "\n":"")."IPv6 Address not changed but Option --force = true.\n";
+          echo "\nIPv6 Address not changed but Option ".($info? "\"--info\"":"\"--force\"")." is Set. --> continue.\n";
           }
-          elseif (!$chk6) {
-            //Write new valid public IPv4 address to local file
-            echo "Public IPv6 changed --> Updating Cached IPv6";
-            file_put_contents($dir.$cip6, $pip6);
+          elseif (!$chk6 && $info) {
+            echo "\nIPv6 Address changed but Option \"--info\" is Set --> no changes will be made.\n";
+            }
+            elseif (!$chk6 && !$info) {
+              //Write new valid public IPv4 address to local file
+              echo "Info --> Public IPv6 changed --> Updating Cached IPv6";
+              file_put_contents($dir.$cip6, $pip6);
     }
 }
 
 //If IPv4(and/or)/6 is set --> get login ID
 if (!$ipv4 && !$ipv6) {
-    echo "There is no IPv4/6 type activated - set one on true --> Exit!.\n";
+    echo "Error --> There is no IPv4/6 type activated - set one on true --> Exit!.\n";
     exit(1);
     }
     else {
@@ -266,8 +299,8 @@ if (!$ipv4 && !$ipv6) {
     debug("\nIPv4 your choice: ".($ipv4 ? "IPv4 = true.":"IPv4 = false."));
     debug("IPv6 your choice: ".($ipv6 ? "IPv6 = true.":"IPv6 = false."));
     debug("\nOption --hosts = ".($hosts ? "true.":"false."));
-    debug("Your host declaration v4: ".(count($hostsv4) == 0? "0":count($hostsv4). " --> " .implode(", ", $hostsv4)));
-    debug("Your host declaration v6: ".(count($hostsv6) == 0? "0":count($hostsv6). " --> " .implode(", ", $hostsv6)));
+    debug("Your host declaration v4: ".(count($hostsv4) == 0? "0":count($hostsv4). " --> \"" .implode("\", \"", $hostsv4)."\""));
+    debug("Your host declaration v6: ".(count($hostsv6) == 0? "0":count($hostsv6). " --> \"" .implode("\", \"", $hostsv6)."\""));
 //Get Login ID
 $apid = login($ncid, $apikey, $apipw);
 debug("\nYour Login ID: ".$apid);
@@ -313,12 +346,6 @@ if ($rec = getrecords($domain, $ncid, $apikey, $apid)) {
              }
          }
     }
-    if ($ipv4) {
-        debug("\nYour Host IPv4 ID's: ".(count($foundV4id) == 0? "0":implode(", ", $foundV4id)));
-       }
-       if ($ipv6) {
-          debug((!$ipv4? "\n":"")."Your Host IPv6 ID's: ".(count($foundV6id) == 0? "0":implode(", ", $foundV6id)));
-    }
 }
 
 //Check Hostname declaration --> hostsv4
@@ -327,7 +354,7 @@ if ($ipv4 && $anzv4 !== 0 && $hosts == true && count($foundV4names) !== $anzv4) 
     echo "your declaration: $anzv4 --> ".implode(", ", $hostsv4)."\n";
     echo "found hostnames : ".(count($foundV4names) == 0? "0":count($foundV4names). " --> " .implode(", ", $foundV4names)). "\n";
     if (!$ipv6) {
-        echo "So we --> EXIT!.\n\n";
+        echo "Error --> So we --> Exit!.\n\n";
         logout($ncid, $apikey, $apid);
         echo "\n";
         exit(1);
@@ -343,7 +370,7 @@ if ($ipv6 && $anzv6 !== 0 && $hosts == true && count($foundV6names) !== $anzv6) 
     echo "\nThere is something wrong with your IPv6 Hostname Declaration\n";
     echo "your declaration: $anzv6 --> ".implode(", ", $hostsv6)."\n";
     echo "found hostnames : ".(count($foundV6names) == 0? "0":count($foundV6names). " --> " .implode(", ", $foundV6names)). "\n";
-    echo "So we --> EXIT!.\n\n";
+    echo "Error --> So we --> Exit!.\n\n";
     logout($ncid, $apikey, $apid);
     echo "\n";
     exit(1);
@@ -352,44 +379,86 @@ if ($ipv6 && $anzv6 !== 0 && $hosts == true && count($foundV6names) !== $anzv6) 
 //IPv4 has changed ?
 if ($ipv4) {
     echo "\n";
-    foreach ($foundV4 as $record) {
-        if ($record['destination'] !== $pip4) {
-            //Yes, IPv4 has changed.
-            echo "IPv4 address for: ".$record['hostname']." has changed.\n";
-            $record['destination'] = $pip4;
-            if (modrecords($domain, $ncid, $apikey, $apid, $record)) {
-                echo "IPv4 address for: ".$record['hostname']." updated successfully!\n";
-                } else {
-                  echo "\nError by Updating IPv4 address for: ".$record['hostname']." --> EXIT!.\n";
-                  exit(1);
-            }
-        }
-        else {
-        //No, IPv4 hasn't changed.
-        echo "IPv4 address for: ".$record['hostname']." not changed.\n";
-        }
+    if (!$info) {
+      printf("%.".$bbr."s\n",$full);
+      printf($top, "|", "ID     |", "HostName        |", "DNS IP          |", "Public IP         |", "Status   |");
+      printf("%.".$bbr."s\n",$full);
+      foreach ($foundV4 as $record) {
+          if ($record['destination'] !== $pip4) {
+              //Yes, IPv4 has changed.
+              //echo "IPv4 address for: ".$record['hostname']." has changed.\n";
+              printf($bod, $rr, $record['id'], $rr, $record['hostname'], $rr, $record['destination'], $rr, $pip4, $rr, "different", $rr);
+              $record['destination'] = $pip4;
+              if (modrecords($domain, $ncid, $apikey, $apid, $record)) {
+                  //echo "IPv4 address for: ".$record['hostname']." --> updated successfully!\n";
+                  //printf($bod1, $rr, "Ipv4 address for ID: ".$record['id']." with HostName: ".$record['hostname']." --> updated successfully!               ", $rr);
+                  printf($bod1, $rr, $record['id'], $rr, $record['hostname'], $rr, "updated successfully!                       ", $rr);
+                  } else {
+                    echo "\nError --> by Updating IPv4 address for: ".$record['hostname']." --> Exit!.\n";
+                    logout($ncid, $apikey, $apid);
+                    exit(1);
+              }
+          }
+          else {
+          //No, IPv4 hasn't changed.
+          //echo "IPv4 address for ID: ".$record['id']." with hostname: \"".$record['hostname']."\" --> not changed.\n";
+          printf($bod, $rr, $record['id'], $rr, $record['hostname'], $rr, $record['destination'], $rr, $pip4, $rr, "equal", $rr);
+          }
+      }
+      //printf($bod1, $rr, $record['id'], $rr, $record['hostname'], $rr, "updated successfully!                       ", $rr);
+      printf("%.".$bbr."s\n",$full);
+    }
+    elseif ($info) {
+
+      printf("%.".$br."s\n",$full);
+      printf($head, "|", "ID       |", "Name          |", "Type  |", "IP             |");
+      printf("%.".$br."s\n",$full);
+      foreach ($foundV4 as $record) {
+          //echo "IPv4 address for ID: ".$record['id']." with hostname: \"".$record['hostname']."\" --> ".$record['destination']."\n";
+          printf($body, $rr, $record['id'], $rr, $record['hostname'], $rr, $record['type'], $rr, $record['destination'], $rr);
+      }
+      printf("%.".$br."s\n",$full);
     }
 }
 
 //IPv6 has changed ?
 if ($ipv6) {
     echo "\n";
-    foreach ($foundV6 as $record) {
-        if ($record['destination'] !== $pip6) {
-            //Yes, IPv6 has changed.
-            echo "IPv6 address for: ".$record['hostname']." has changed.\n";
-            $record['destination'] = $pip6;
-            if (modrecords($domain, $ncid, $apikey, $apid, $record)) {
-                echo "IPv6 address for: ".$record['hostname']." updated successfully!\n";
-                } else {
-                  echo "\nError by Updating IPv6 address for: ".$record['hostname']." --> EXIT!.\n";
-                  exit(1);
-            }
-        }
-        else {
-        //No, IPv6 hasn't changed.
-        echo "IPv6 address for: ".$record['hostname']." not changed.\n";
-        }
+    if (!$info) {
+      printf("%.".$bbr."s\n",$full);
+      printf($top, "|", "ID     |", "HostName        |", "DNS IP          |", "Public IP         |", "Status   |");
+      printf("%.".$bbr."s\n",$full);
+      foreach ($foundV6 as $record) {
+          if ($record['destination'] !== $pip6) {
+              //Yes, IPv6 has changed.
+              //echo "IPv6 address for: ".$record['hostname']." has changed.\n";
+              printf($bod, $rr, $record['id'], $rr, $record['hostname'], $rr, $record['destination'], $rr, $pip6, $rr, "different", $rr);
+              $record['destination'] = $pip6;
+              if (modrecords($domain, $ncid, $apikey, $apid, $record)) {
+                  echo "IPv6 address for: ".$record['hostname']." --> updated successfully!\n";
+                  } else {
+                    echo "\nError --> by Updating IPv6 address for: ".$record['hostname']." --> Exit!.\n";
+                    logout($ncid, $apikey, $apid);
+                    exit(1);
+              }
+          }
+          else {
+          //No, IPv6 hasn't changed.
+          //echo "IPv6 address for ID: ".$record['id']." with hostname: \"".$record['hostname']."\" --> not changed.\n";
+          printf($bod, $rr, $record['id'], $rr, $record['hostname'], $rr, $record['destination'], $rr, $pip6, $rr, "equal", $rr);
+          }
+      }
+      printf("%.".$bbr."s\n",$full);
+    }
+    elseif ($info) {
+      printf("%.".$br."s\n",$full);
+      printf($head, "|", "ID       |", "Name          |", "Type  |", "IP             |");
+      printf("%.".$br."s\n",$full);
+      foreach ($foundV6 as $record) {
+          //echo "IPv6 address for ID: ".$record['id']." with hostname: \"".$record['hostname']."\" --> ".$record['destination']."\n";
+          printf($body, $rr, $record['id'], $rr, $record['hostname'], $rr, $record['type'], $rr, $record['destination'], $rr);
+      }
+      printf("%.".$br."s\n",$full);
     }
 }
 
