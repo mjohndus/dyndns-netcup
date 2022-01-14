@@ -37,22 +37,21 @@ Using the **[Netcup-DNS_API](https://www.netcup-wiki.de/wiki/DNS_API)**.
 **At first start:**  
 - cip4.log (and/or) cip6.log files for saving current addresses are created in the same folder.  
 
-**At start-up before login:**  
-- an ip check compares the current and the stored ip.  
-
-- If nothing has changed, the script is terminated.  
-- The script starts if ip changed or option --force is set.  
+**At start-up before login:**
+an ip check compares the current and the stored ip.
+If nothing has changed, the script will abort.
+The script starts if ip changed or option --force is set.
 
 **Use:** ./dncapi.php  
 
 **Use with option:** ./dncapi.php --force  
 
 | option | description |
-|:------:|------------:|
+|:-------|------------:|
 | --force | ignore ip check, starts the script |
 | --hosts | use your declared hostnames |
-| --debug | some information |
-| --info | shows DNS Zone nformations |
+| --debug | some informations |
+| --info | Shows Zone information |
 
 ## Output
 **Example outputs for IPv4:**
@@ -67,23 +66,15 @@ Using the **[Netcup-DNS_API](https://www.netcup-wiki.de/wiki/DNS_API)**.
 
 **2. Output (--force, --debug)**
 
-yyyy@xxx: ./dncapi.php --force --debug  
+yyyy@xxx: ./dncapi.php --force  
 
-Option "--force" is Set: ignore's ipcheck and different ip(4/6) will be changed.  
+Option "--force" is Set: ignore's ipcheck and different IPv(4/6) will be changed.  
 
-Get IPv4 from first server ip: 177.198.122.123 is valid
+Get IPv4 from first server ip: 177.198.122.123 is valid  
+
 IPv4 Address not changed but Option "--force" is Set. --> continue.  
 
-IPv4 your choice: IPv4 = true.  
-IPv6 your choice: IPv6 = false.  
-
-Option --hosts = false.  
-Your host declaration v4: 2 --> "xxxx", "yyyy"  
-Your host declaration v6: all  
-
 Login: success  
-
-Your Login ID: cjc0M2MxOTI1NjhSM12345678912345672ZCUm1RSTU5NjFBOD
 ```
 --> force
 ---------------------------------------------------------------------------------------------------
@@ -110,6 +101,7 @@ yyyy@xxx: ./dncapi.php --info
 Option "--info" is Set: no changes will be made.  
 
 Get IPv4 from first server ip: 177.198.122.123 is valid  
+
 IPv4 Address not changed but Option "--info" is Set. --> continue.  
 
 IPv4 your choice: IPv4 = true.  
@@ -123,7 +115,7 @@ Login: success
 
 Your Login ID: cjc0M2MxOTI1NjhSM12345678912345672ZCUm1RSTU5NjFBOD  
 ```
---> info: Domain Zone Info
+--> info: Domain Zone
 --------------------------------------------------------------------------------
 |       ID       |         Name          |  Type  |             IP             |
 --------------------------------------------------------------------------------
