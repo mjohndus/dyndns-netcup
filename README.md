@@ -17,8 +17,9 @@ Using the **[Netcup-DNS_API](https://www.netcup-wiki.de/wiki/DNS_API)**.
 - $domain = 'yourdomain.de';
 
 **Your choice:**  
-- $ipv4 = true;  
-- $ipv6 = false;  
+- select IPv4 and/or IPv6:  
+  - $ipv4 = true;  
+  - $ipv6 = false;  
 
 **Define your Hostnames:**
 - $hostsv4 = [];
@@ -38,9 +39,9 @@ Using the **[Netcup-DNS_API](https://www.netcup-wiki.de/wiki/DNS_API)**.
 - cip4.log (and/or) cip6.log files for saving current addresses are created in the same folder.  
 
 **At start-up before login:**
-an ip check compares the current and the stored ip.
-If nothing has changed, the script will abort.
-The script starts if ip changed or option --force is set.
+- an ip check compares the current and the stored ip.  
+- If nothing has changed, the script will abort.  
+- The script starts if ip changed or option --force is set.  
 
 **Use:** ./dncapi.php  
 
@@ -51,7 +52,7 @@ The script starts if ip changed or option --force is set.
 | --force | ignore ip check, starts the script |
 | --hosts | use your declared hostnames |
 | --debug | some informations |
-| --info | Shows Zone information |
+| --info | shows Zone informations |
 
 ## Output
 **Example outputs for IPv4:**
@@ -64,13 +65,11 @@ The script starts if ip changed or option --force is set.
        - --> debug and force not activated  
      - there is no Output  
 
-**2. Output (--force, --debug)**
+**2. Output (--force)**
 
 yyyy@xxx: ./dncapi.php --force  
 
 Option "--force" is Set: ignore's ipcheck and different IPv(4/6) will be changed.  
-
-Get IPv4 from first server ip: 177.198.122.123 is valid  
 
 IPv4 Address not changed but Option "--force" is Set. --> continue.  
 
