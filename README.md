@@ -52,24 +52,86 @@ Using the **[Netcup-DNS_API](https://www.netcup-wiki.de/wiki/DNS_API)**.
 | --force | ignore ip check, starts the script |
 | --hosts | use your declared hostnames |
 | --debug | some information |
+| --info | shows DNS Zone nformations |
 
 ## Output
-**There is no output: If nothing to do and NO ERROR**  
-**Output by --force, --debug or IP changed**  
+**Example outputs for IPv4:**
 
-IPv4 address for: \<hostname\> not changed.  
-**or**  
-IPv4 address for: \<hostname\> updated successfully!  
+**1. Cronjob**
+- 0,30 * * * * /your path to/dncapi.php  
 
-##### Example for IPv4:
+     - Using in cronjob:  
+       - --> if NO Error or Update  
+       - --> debug and force not activated  
+     - there is no Output  
 
-yyyy@xxx: ./dncapi.php --force  
-IPv4 Address changed or Option --force is enabled.  
+**2. Output (--force, --debug)**
+
+yyyy@xxx: ./dncapi.php --force --debug  
+
+Option "--force" is Set: ignore's ipcheck and different ip(4/6) will be changed.  
+
+Get IPv4 from first server ip: 177.198.122.123 is valid
+IPv4 Address not changed but Option "--force" is Set. --> continue.  
+
+IPv4 your choice: IPv4 = true.  
+IPv6 your choice: IPv6 = false.  
+
+Option --hosts = false.  
+Your host declaration v4: 2 --> "xxxx", "yyyy"  
+Your host declaration v6: all  
+
 Login: success  
-IPv4 address for: * not changed.  
-IPv4 address for: @ not changed.  
-IPv4 address for: dynd not changed.  
-IPv4 address for: xxx not changed.  
-IPv4 address for: yyy not changed.  
-IPv4 ..  
+
+Your Login ID: cjc0M2MxOTI1NjhSM12345678912345672ZCUm1RSTU5NjFBOD
+```
+--> force
+---------------------------------------------------------------------------------------------------
+|     ID     |      HostName      |         DNS IP         |        Public IP        |   Status   |
+---------------------------------------------------------------------------------------------------
+| 44433344   | *                  |        177.198.122.123 |         177.198.122.123 |      equal |
+| 44433355   | @                  |        177.198.122.123 |         177.198.122.123 |      equal |
+| 44433366   | xxxx               |        199.198.199.123 |         177.198.122.123 |  different |
+| 44433366   | xxxx               |                  updated successfully!                        |
+| 43355566   | yyyy               |        177.198.122.123 |         177.198.122.123 |      equal |
+---------------------------------------------------------------------------------------------------
+<-- force
+```
+
+Logout: success  
+
+**3. Output (--info)**
+- --debug and --force are activated automatically  
+  - --> but no changes are made  
+  - --> only info  
+
+yyyy@xxx: ./dncapi.php --info  
+
+Option "--info" is Set: no changes will be made.  
+
+Get IPv4 from first server ip: 177.198.122.123 is valid  
+IPv4 Address not changed but Option "--info" is Set. --> continue.  
+
+IPv4 your choice: IPv4 = true.  
+IPv6 your choice: IPv6 = false.  
+
+Option --hosts = false.  
+Your host declaration v4: 2 --> "xxxx", "yyyy"  
+Your host declaration v6: all  
+
+Login: success  
+
+Your Login ID: cjc0M2MxOTI1NjhSM12345678912345672ZCUm1RSTU5NjFBOD  
+```
+--> info: Domain Zone Info
+--------------------------------------------------------------------------------
+|       ID       |         Name          |  Type  |             IP             |
+--------------------------------------------------------------------------------
+| 44433344       | *                     |      A |            177.198.122.123 |
+| 44433355       | @                     |      A |            177.198.122.123 |
+| 44433366       | xxxx                  |      A |            177.198.122.123 |
+| 43355566       | yyyy                  |      A |            177.198.122.123 |
+--------------------------------------------------------------------------------
+<-- info
+```
 Logout: success  
